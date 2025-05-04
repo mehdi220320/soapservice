@@ -1,106 +1,43 @@
-SOAP Web Service Troubleshooting Guide
-Project Configuration Updates
-pom.xml Modifications
-Version Updates:
+# TP SOAP troubleshooting
+## pox.xml 
+- Change Spring Boot version to 3.4.4
+- Change java version to 17.0.0
+- Change dependencies version to be comppatible with the java 17 and spring boot 3.4.4 
+- Dependencies : Change javax dependency to jakarta :
 
-Spring Boot version changed to 3.1.5
+      <dependency>
+          <groupId>jakarta.xml.bind</groupId>
+          <artifactId>jakarta.xml.bind-api</artifactId>
+      </dependency>
 
-Java version updated to 17.0.0
+- Plugins : delete the plugin version to be by default and edit it as follows :
+            
+                  <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaDirectory>src/main/resources/</schemaDirectory>
+                    <outputDirectory>src/main/java</outputDirectory>
+                </configuration>
+            </plugin>
 
-Dependencies Management:
+## Add ConvertCurrencyRequest and ConvertCurrencyResponse 
+  -  Create the following two classes with attributes corresponding to the elements defined in currency-converter.xsd:
+     -ConvertCurrencyRequest
+     -ConvertCurrencyResponse
 
-Updated all dependencies to be compatible with Java 17 and Spring Boot 3.1.5
-
-Replaced javax dependencies with jakarta:
-<dependency>
-    <groupId>jakarta.xml.bind</groupId>
-    <artifactId>jakarta.xml.bind-api</artifactId>
-    <version>4.0.0</version>
-</dependency>
-Plugin Configuration:
-
-Modified the jaxb2-maven-plugin configuration:
-<plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>jaxb2-maven-plugin</artifactId>
-    <executions>
-        <execution>
-            <goals>
-                <goal>xjc</goal>
-            </goals>
-        </execution>
-    </executions>
-    <configuration>
-        <schemaDirectory>src/main/resources/</schemaDirectory>
-        <outputDirectory>src/main/java</outputDirectory>
-    </configuration>
-</plugin>
-Service Implementation
-Request/Response Classes
-ConvertCurrencyRequest:
-
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-        "fromCurrency",
-        "toCurrency",
-        "amount"
-})
-@XmlRootElement(name = "ConvertCurrencyRequest", namespace = "http://example.com/currency")
-public class ConvertCurrencyRequest {
-    @XmlElement(namespace = "http://example.com/currency", required = true)
-    private String fromCurrency;
-    @XmlElement(namespace = "http://example.com/currency", required = true)
-    private String toCurrency;
-    @XmlElement(namespace = "http://example.com/currency")
-    private double amount;
-
-    public String getFromCurrency() {
-        return fromCurrency;
-    }
-
-    public void setFromCurrency(String fromCurrency) {
-        this.fromCurrency = fromCurrency;
-    }
-
-    public String getToCurrency() {
-        return toCurrency;
-    }
-
-    public void setToCurrency(String toCurrency) {
-        this.toCurrency = toCurrency;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-}
-ConvertCurrencyResponse:
-
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-        "convertedAmount"
-})
-@XmlRootElement(name = "ConvertCurrencyResponse", namespace = "http://example.com/currency")
-public class ConvertCurrencyResponse {
-    @XmlElement(namespace = "http://example.com/currency")
-    private double convertedAmount;
-
-    public double getConvertedAmount() {
-        return convertedAmount;
-    }
-
-    public void setConvertedAmount(double convertedAmount) {
-        this.convertedAmount = convertedAmount;
-    }
-
-
-}
-Web Service Configuration
-Updated WebServiceConfig.java:
+-Annotate each class with:
+    @XmlAccessorType
+    @XmlType
+## WebServiceConfig.java :
+- Modify the webServiceConfig and make it as follows:        
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
@@ -128,10 +65,4 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         return new SimpleXsdSchema(new ClassPathResource("currency-converter.xsd"));
     }
 }
-
-Version Compatibility Matrix
-Component	Version
-Spring Boot	3.1.5
-Java	17.0.0
-Jakarta XML Bind	4.0.0
-JAXB2 Maven Plugin	3.1.0
+ 
