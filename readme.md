@@ -38,30 +38,30 @@
     @XmlType
 ## WebServiceConfig.java :
 - Modify the webServiceConfig and make it as follows:        
-   -   @EnableWs
-    -  @Configuration
-     - public class WebServiceConfig extends WsConfigurerAdapter {
-      -    @Bean
-       -   public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext context) {
-        -      MessageDispatcherServlet servlet = new MessageDispatcherServlet();
-         -     servlet.setApplicationContext(context);
-          -    servlet.setTransformWsdlLocations(true);
-           -   return new ServletRegistrationBean<>(servlet, "/ws/*");
-          -}
+      @EnableWs
+      @Configuration
+      public class WebServiceConfig extends WsConfigurerAdapter {
+         @Bean
+        public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext context) {
+              MessageDispatcherServlet servlet = new MessageDispatcherServlet();
+              servlet.setApplicationContext(context);
+              servlet.setTransformWsdlLocations(true);
+             return new ServletRegistrationBean<>(servlet, "/ws/*");
+          }
       
-     -     @Bean(name = "currency")
-      -    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema currencySchema) {
-       -       DefaultWsdl11Definition definition = new DefaultWsdl11Definition();
-        -      definition.setSchema(currencySchema);
-         -     definition.setLocationUri("/ws");
-          -    definition.setPortTypeName("CurrencyPort");
-           -   definition.setTargetNamespace("http://example.com/currency");
-            -  return definition;
-          -}
+          @Bean(name = "currency")
+         public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema currencySchema) {
+              DefaultWsdl11Definition definition = new DefaultWsdl11Definition();
+              definition.setSchema(currencySchema);
+              definition.setLocationUri("/ws");
+              definition.setPortTypeName("CurrencyPort");
+              definition.setTargetNamespace("http://example.com/currency");
+              return definition;
+          }
       
-        -  @Bean
-         - public XsdSchema currencySchema() {
-          -    return new SimpleXsdSchema(new ClassPathResource("currency-converter.xsd"));
-          -}
-      -}
+          @Bean
+          public XsdSchema currencySchema() {
+              return new SimpleXsdSchema(new ClassPathResource("currency-converter.xsd"));
+          }
+      }
  
